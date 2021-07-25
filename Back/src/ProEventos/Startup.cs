@@ -6,17 +6,19 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using ProEventos.Data;
 
 namespace ProEventos
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration) //é o metodo que faz acesso aos arquivos de seing quando eles precisam ser referenciados
         {
             Configuration = configuration;
         }
@@ -26,7 +28,10 @@ namespace ProEventos
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddDbContext<DataContext>//Metodo que cria a referencia para nossa classe db context e passa para o 'caminho' do banco de dados tulizando o condiguration.
+            (
+                context => context.UseSqlite (Configuration.GetConnectionString("Default"))//chama o nosso caminho que foi adcionado no appsettingsem "connectionStrings"
+            );
             services.AddControllers();//metodo que chama os controlers
             services.AddSwaggerGen(c =>
             {
